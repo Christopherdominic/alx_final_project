@@ -1,59 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
-function MovieDetails() {
-  const { movieId } = useParams();
+const MovieDetails = () => {
+  const { id } = useParams();
   const [movie, setMovie] = useState(null);
-  const [recommendations, setRecommendations] = useState([]);
+  const [trailer, setTrailer] = useState(null);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/movie/${movieId}?api_key=504a45076accb0f6d28e87336662450d`
-      );
-      setMovie(response.data);
+      try {
+        // Fetch movie details
+        const movieRes = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=504a45076accb0f6d28e87336662450d`);
+        setMovie(movieRes.data);
 
-      const recResponse = await axios.get(
-        `https://api.themoviedb.org/3/movie/${movieId}/recommendations?api_key=504a45076accb0f6d28e87336662450d`
-      );
-      setRecommendations(recResponse.data.results);
+        // Fetch trailer
+        const trailerRes = await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=504a45076accb0f6d28e87336662450d`);
+        
+        // Filter for the trailer
+        const trailerVideo = trailerRes.data.results.find(video => video.type === "Trailer" && video.site === "YouTube");
+        
+        // If trailer exists, set it
+        setTrailer(trailerVideo ? `https://www.youtube.com/embed/${trailerVideo.key}` : null);
+      } catch (error) {
+        console.error('Error fetching movie details or trailer:', error);
+      }
     };
+
     fetchMovieDetails();
-  }, [movieId]);
+  }, [id]);
+
+  if (!movie) return <div>Loading...</div>;
 
   return (
     <div className="container">
-      {movie && (
-        <>
+      <div className="row">
+        <div className="col-md-4">
+          <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} className="img-fluid" />
+        </div>
+        <div className="col-md-8">
           <h2>{movie.title}</h2>
           <p>{movie.overview}</p>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-            alt={movie.title}
-          />
-          <h3>Recommended Movies</h3>
-          <div className="row">
-            {recommendations.map((recMovie) => (
-              <div className="col-md-3" key={recMovie.id}>
-                <div className="card">
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${recMovie.poster_path}`}
-                    alt={recMovie.title}
-                    className="card-img-top"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{recMovie.title}</h5>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+
+          {trailer ? (
+            <div className="embed-responsive embed-responsive-16by9">
+              <iframe
+                className="embed-responsive-item"
+                src={trailer}
+                allowFullScreen
+                title="Movie Trailer"
+              ></iframe>
+            </div>
+          ) : (
+            <p>No trailer available for this movie.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default MovieDetails;
 

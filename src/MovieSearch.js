@@ -1,50 +1,56 @@
-import React, { useState } from 'react';
+// In your MovieSearch component
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function MovieSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [movies, setMovies] = useState([]);
+const MovieSearch = () => {
+    const [movies, setMovies] = useState([]);
+    const [query, setQuery] = useState('');
+    const [genres, setGenres] = useState([]);
+    const [selectedGenre, setSelectedGenre] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/search/movie?api_key=504a45076accb0f6d28e87336662450d&query=${searchTerm}`
+    const API_KEY = '504a45076accb0f6d28e87336662450d';
+
+    useEffect(() => {
+        async function fetchGenres() {
+            const genreData = await axios.get(`https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}`);
+            setGenres(genreData.data.genres);
+        }
+        fetchGenres();
+    }, []);
+
+    const searchMovies = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}&with_genres=${selectedGenre}`);
+            setMovies(res.data.results);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error searching movies:', error);
+        }
+    };
+
+    return (
+        <div>
+            <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search movies..." />
+            <select onChange={(e) => setSelectedGenre(e.target.value)}>
+                <option value="">All Genres</option>
+                {genres.map(genre => (
+                    <option key={genre.id} value={genre.id}>{genre.name}</option>
+                ))}
+            </select>
+            <button onClick={searchMovies}>Search</button>
+
+            {loading ? <div>Loading...</div> : (
+                <ul>
+                    {movies.map(movie => (
+                        <li key={movie.id}>{movie.title}</li>
+                    ))}
+                </ul>
+            )}
+        </div>
     );
-    setMovies(response.data.results);
-  };
-
-  return (
-    <div className="container">
-      <h2>Search for Movies</h2>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Enter movie title"
-          className="form-control mb-3"
-        />
-        <button type="submit" className="btn btn-primary">Search</button>
-      </form>
-      <div className="row mt-4">
-        {movies.map((movie) => (
-          <div className="col-md-3" key={movie.id}>
-            <div className="card">
-              <img
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                alt={movie.title}
-                className="card-img-top"
-              />
-              <div className="card-body">
-                <h5 className="card-title">{movie.title}</h5>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+};
 
 export default MovieSearch;
 

@@ -1,9 +1,13 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'; 
+import Header from './Header';
+import Footer from './Footer';
+import LandingPage from './LandingPage';
 import Watchlist from './Watchlist';
 import PopularMovies from './PopularMovies';
 import MovieDetails from './MovieDetails';
+import MovieSearch from './MovieSearch';
 
 function App() {
   return (
@@ -26,9 +30,11 @@ function App() {
         </nav>
 
         <Routes>
-          <Route path="/" element={<PopularMovies />} />
-          <Route path="/movies/:id" element={<MovieDetails />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/popular" element={<PopularMovies />} />
+          <Route path="/movie/:id" element={<MovieDetails />} />
           <Route path="/watchlist" element={<Watchlist />} />
+          <Route path="/search" element={<MovieSearch />} />
         </Routes>
       </div>
     </Router>

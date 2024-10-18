@@ -1,0 +1,23 @@
+.landing-page {
+  padding: 100px 0;
+  background-color: #f8f9fa;
+}
+
+.landing-page h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.landing-page .app-features {
+  margin-top: 50px;
+}
+
+.landing-page .feature-item {
+  margin-bottom: 30px;
+}
+
+.landing-page .feature-item h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+

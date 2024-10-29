@@ -1,35 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Header.css';
 
-const Header = () => {
+function Header() {
   return (
-    <header className="bg-dark text-white py-3">
-      <div className="container d-flex justify-content-between align-items-center">
-        <div className="logo">
-          {/* Placeholder for the logo */}
-          <h1 className="text-white">MovieApp</h1>
+    <header>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="container-fluid">
+          <Link className="navbar-brand" to="/">CMD Movie Recommendation App</Link>
+          <div className="collapse navbar-collapse">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <Link className="nav-link" to="/">Home</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/watchlist">Watchlist</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/search">Search</Link>
+              </li>
+            </ul>
+          </div>
         </div>
-        <nav>
-          <ul className="nav">
-            <li className="nav-item">
-              <Link to="/" className="nav-link text-white">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/popular" className="nav-link text-white">Popular Movies</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/watchlist" className="nav-link text-white">Watchlist</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/search" className="nav-link text-white">Search</Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      </nav>
     </header>
   );
-};
+}
 
 export default Header;
 

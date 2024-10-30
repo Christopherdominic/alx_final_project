@@ -1,15 +1,11 @@
 import React from 'react';
 import './Footer.css';
 
-const Footer = () => {
-  return (
-    <footer className="bg-dark text-white py-3 mt-4">
-      <div className="container text-center">
-        <p>&copy; 2024 MovieApp. All Rights Reserved.</p>
-      </div>
-    </footer>
-  );
-};
+const Footer = () => (
+  <footer className="footer">
+    <p>&copy; {new Date().getFullYear()} MovieApp. All rights reserved.</p>
+  </footer>
+);
 
 export default Footer;
 
